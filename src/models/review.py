@@ -1,24 +1,28 @@
-"""
-Review related functionality
-"""
+""" Review related functionality. """
+
 
 from src.models.base import Base
 from src.models.place import Place
 from src.models.user import User
+from src import db
+from sqlalchemy import Column, Text, Float, DateTime, Integer, ForeignKey
+from datetime import datetime
 
 
 class Review(Base):
-    """Review representation"""
 
-    place_id: str
-    user_id: str
-    comment: str
-    rating: float
+    __tablename__ = 'reviews'
+    id = db.Column(db.Integer, primary_key=True)
+    place_id = db.Column(db.Integer, db.ForeignKey('places.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    comment = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Float, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def __init__(
         self, place_id: str, user_id: str, comment: str, rating: float, **kw
     ) -> None:
-        """Dummy init"""
         super().__init__(**kw)
 
         self.place_id = place_id
@@ -27,11 +31,9 @@ class Review(Base):
         self.rating = rating
 
     def __repr__(self) -> str:
-        """Dummy repr"""
         return f"<Review {self.id} - '{self.comment[:25]}...'>"
 
     def to_dict(self) -> dict:
-        """Dictionary representation of the object"""
         return {
             "id": self.id,
             "place_id": self.place_id,
@@ -44,8 +46,7 @@ class Review(Base):
 
     @staticmethod
     def create(data: dict) -> "Review":
-        """Create a new review"""
-        from src.persistence import repo
+        from src.persistence import db
 
         user: User | None = User.get(data["user_id"])
 
@@ -59,14 +60,13 @@ class Review(Base):
 
         new_review = Review(**data)
 
-        repo.save(new_review)
+        db.save(new_review)
 
         return new_review
 
     @staticmethod
     def update(review_id: str, data: dict) -> "Review | None":
-        """Update an existing review"""
-        from src.persistence import repo
+        from src.persistence import db
 
         review = Review.get(review_id)
 
@@ -76,6 +76,6 @@ class Review(Base):
         for key, value in data.items():
             setattr(review, key, value)
 
-        repo.update(review)
+        db.update(review)
 
         return review

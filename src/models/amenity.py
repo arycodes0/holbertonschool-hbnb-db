@@ -1,6 +1,5 @@
-"""
-Amenity related functionality
-"""
+""" Amenity related functionality. """
+
 
 from src.models.base import Base
 

@@ -1,82 +1,33 @@
-"""
-This module exports configuration classes for the Flask application.
-
-- DevelopmentConfig
-- TestingConfig
-- ProductionConfig
-
-"""
-
-from abc import ABC
 import os
+import sqlite3
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
 
 
-class Config(ABC):
-    """
-    Initial configuration settings
-    This class should not be instantiated directly
-    """
+basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, '../.env'))
 
+class Config:
     DEBUG = False
     TESTING = False
-
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-
+    SECRET_KEY = os.getenv('SECRET_KEY', 'hohohoitsasecret')
+    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'hohohoitsasecret')
+    JWT_ACCESS_TOKEN_EXPIRES = 3600
+    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///hbnb.db')
 
 class DevelopmentConfig(Config):
-    """
-    Development configuration settings
-    This configuration is used when running the application locally
-
-    This is useful for development and debugging purposes.
-
-    To check if the application is running in development mode, you can use:
-    ```
-    app = Flask(__name__)
-
-    if app.debug:
-        # Do something
-    ```
-    """
-
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DATABASE_URL", "sqlite:///hbnb_dev.db")
     DEBUG = True
-
-
-class TestingConfig(Config):
-    """
-    Testing configuration settings
-    This configuration is used when running tests.
-    You can enabled/disable things across the application
-
-    To check if the application is running in testing mode, you can use:
-    ```
-    app = Flask(__name__)
-
-    if app.testing:
-        # Do something
-    ```
-
-    """
-
-    TESTING = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
-
+    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///development.db')
 
 class ProductionConfig(Config):
-    """
-    Production configuration settings
-    This configuration is used when you create a
-    production build of the application
-
-    The debug or testing options are disabled in this configuration.
-    """
-
-    TESTING = False
     DEBUG = False
+    SQLALCHEMY_DATABASE_URI = os.getenv('PROD_DATABASE_URL', 'postgresql://user:password@localhost/hbnb_prod')
 
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DATABASE_URL",
-        "postgresql://user:password@localhost/hbnb_prod"
-    )
+class TestingConfig(Config):
+    TESTING = True
+    ENV= 'testing'
+    SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URL', 'sqlite:///:memory:')
+    SECRET_KEY = 'hohohoitsasecret'
+    JWT_SECRET_KEY = 'hohohoitsasecret'

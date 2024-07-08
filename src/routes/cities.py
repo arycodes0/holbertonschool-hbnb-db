@@ -1,8 +1,8 @@
-"""
-This module contains the routes for the cities blueprint
-"""
+""" This module contains the routes for the cities blueprint. """
+
 
 from flask import Blueprint
+from flask_jwt_extended import jwt_required
 from src.controllers.cities import (
     create_city,
     delete_city,

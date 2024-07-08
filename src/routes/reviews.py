@@ -1,6 +1,39 @@
 """
-This module contains the routes for the reviews blueprint
+This module contains the routes for the reviews blueprint.
+
+Blueprint: `reviews_bp`
+- Organizes routes under the reviews module.
+
+Routes:
+- `POST /places/<place_id>/reviews`:
+  - Creates a new review for a place (requires JWT authentication).
+  - Handler: `create_review`
+
+- `GET /places/<place_id>/reviews`:
+  - Retrieves all reviews for a specific place.
+  - Handler: `get_reviews_from_place`
+
+- `GET /users/<user_id>/reviews`:
+  - Retrieves all reviews from a specific user.
+  - Handler: `get_reviews_from_user`
+
+- `GET /reviews`:
+  - Retrieves all reviews.
+  - Handler: `get_reviews`
+
+- `GET /reviews/<review_id>`:
+  - Retrieves a specific review by its ID.
+  - Handler: `get_review_by_id`
+
+- `PUT /reviews/<review_id>`:
+  - Updates a specific review by its ID.
+  - Handler: `update_review`
+
+- `DELETE /reviews/<review_id>`:
+  - Deletes a specific review by its ID.
+  - Handler: `delete_review`
 """
+
 
 from flask import Blueprint
 from src.controllers.reviews import (

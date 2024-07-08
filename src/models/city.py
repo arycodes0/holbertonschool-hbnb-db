@@ -1,30 +1,32 @@
-"""
-City related functionality
-"""
+""" City related functionality. """
+
 
 from src.models.base import Base
 from src.models.country import Country
+from src import db
+from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy.orm import relationship, backref
 
 
 class City(Base):
-    """City representation"""
+    
+    __tablename__ = 'cities'
 
-    name: str
-    country_code: str
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    country_code = db.Column(db.String(2), db.ForeignKey('countries.code'), nullable=False)
+    country = db.relationship('Country', backref=db.backref('cities', lazy=True))
 
     def __init__(self, name: str, country_code: str, **kw) -> None:
-        """Dummy init"""
         super().__init__(**kw)
 
         self.name = name
         self.country_code = country_code
 
     def __repr__(self) -> str:
-        """Dummy repr"""
         return f"<City {self.id} ({self.name})>"
 
     def to_dict(self) -> dict:
-        """Dictionary representation of the object"""
         return {
             "id": self.id,
             "name": self.name,
@@ -35,8 +37,7 @@ class City(Base):
 
     @staticmethod
     def create(data: dict) -> "City":
-        """Create a new city"""
-        from src.persistence import repo
+        from src.persistence import db
 
         country = Country.get(data["country_code"])
 
@@ -45,7 +46,26 @@ class City(Base):
 
         city = City(**data)
 
-        repo.save(city)
+        db.save(city)
+
+        return city
+
+    @staticmethod
+    def update(city_id: str, data: dict) -> "City":
+        from src.persistence import db
+
+        city = City.get(city_id)
+
+        if not city:
+            raise ValueError("City not found")
+
+        for key, value in data.items():
+            setattr(city, key, value)
+
+        db.update(city)
+
+        return city
+
 
         return city
 

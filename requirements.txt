@@ -1,4 +1,27 @@
+"""
+Documentation for requirements.txt:
+
+Packages:
+1. `alembic`: Database migration tool for SQLAlchemy.
+2. `config`: Configuration management (assumed to be a custom package or a placeholder, commonly used for handling configurations).
+3. `flask`: Web framework for building web applications.
+4. `flask-cors`: Extension to handle Cross-Origin Resource Sharing (CORS) in Flask.
+5. `Flask-SQLAlchemy>=2.5`: Extension for integrating SQLAlchemy with Flask.
+6. `gunicorn`: WSGI HTTP server for running Flask applications in production.
+7. `jwt`: JSON Web Tokens for authentication (assumed to be a placeholder, typically `PyJWT` is used).
+8. `python-dotenv`: Loads environment variables from a `.env` file.
+9. `requests`: Library for making HTTP requests.
+10. `SQLAlchemy>=1.4`: SQL toolkit and ORM for Python.
+"""
+
+
+alembic
+config
 flask
 flask-cors
-
+Flask-SQLAlchemy>=2.5
 gunicorn
+jwt
+python-dotenv
+requests
+SQLAlchemy>=1.4
